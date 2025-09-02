@@ -4,6 +4,13 @@ use App\Http\Controllers\PortfolioController;
 use App\Http\Controllers\SkillController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\{
+    AdminPortfolioController,
+    AdminProjectController,
+    AdminExperienceController,
+    AdminEducationController,
+    AdminSkillController
+};
 
 /*
 |--------------------------------------------------------------------------
@@ -42,12 +49,37 @@ Route::prefix('skills')->group(function () {
     Route::get('/stats', [SkillController::class, 'stats']);
 });
 
-// Example protected routes (uncomment when authentication is implemented)
-/*
-Route::middleware('auth:sanctum')->group(function () {
-    Route::post('/portfolios', [PortfolioController::class, 'store']);
-    Route::put('/portfolios/{id}', [PortfolioController::class, 'update']);
-    Route::delete('/portfolios/{id}', [PortfolioController::class, 'destroy']);
-    Route::post('/skills', [SkillController::class, 'store']);
+Route::middleware('admin.key')->prefix('admin')->group(function () {
+    // portfolios
+    Route::get('/portfolios', [AdminPortfolioController::class, 'index']);
+    Route::post('/portfolios', [AdminPortfolioController::class, 'store']);
+    Route::put('/portfolios/{id}', [AdminPortfolioController::class, 'update']);
+    Route::delete('/portfolios/{id}', [AdminPortfolioController::class, 'destroy']);
+
+    // projects
+    Route::get('/projects', [AdminProjectController::class, 'index']);
+    Route::post('/projects', [AdminProjectController::class, 'store']);
+    Route::put('/projects/{id}', [AdminProjectController::class, 'update']);
+    Route::delete('/projects/{id}', [AdminProjectController::class, 'destroy']);
+
+    // experiences
+    Route::get('/experiences', [AdminExperienceController::class, 'index']);
+    Route::post('/experiences', [AdminExperienceController::class, 'store']);
+    Route::put('/experiences/{id}', [AdminExperienceController::class, 'update']);
+    Route::delete('/experiences/{id}', [AdminExperienceController::class, 'destroy']);
+
+    // education
+    Route::get('/education', [AdminEducationController::class, 'index']);
+    Route::post('/education', [AdminEducationController::class, 'store']);
+    Route::put('/education/{id}', [AdminEducationController::class, 'update']);
+    Route::delete('/education/{id}', [AdminEducationController::class, 'destroy']);
+
+    // skills (master + relasi via portfolio_skills)
+    Route::get('/skills', [AdminSkillController::class, 'index']);
+    Route::post('/skills', [AdminSkillController::class, 'store']);
+    Route::put('/skills/{id}', [AdminSkillController::class, 'update']);
+    Route::delete('/skills/{id}', [AdminSkillController::class, 'destroy']);
+
+    // attach/detach skill ke portfolio
+    Route::post('/portfolios/{id}/skills/sync', [AdminPortfolioController::class, 'syncSkills']);
 });
-*/
